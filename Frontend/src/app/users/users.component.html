@@ -1,0 +1,58 @@
+<h1>Users</h1>
+<ul>
+  <li *ngFor="let user of users">
+    {{ user.first_name }} {{ user.last_name }} - {{ user.email }}
+    <button (click)="editUser(user)">Edit</button>
+    <button (click)="deleteUser(user._id)">Delete</button>
+  </li>
+</ul>
+
+<hr>
+
+<h2>{{ isEditMode ? 'Edit User' : 'Create User' }}</h2>
+<form *ngIf="selectedUser" (submit)="isEditMode ? updateUser(selectedUser) : createUser(selectedUser)" #userForm="ngForm">
+  <input type="text" name="first_name" placeholder="First Name" [(ngModel)]="selectedUser.first_name" required>
+  <input type="text" name="last_name" placeholder="Last Name" [(ngModel)]="selectedUser.last_name" required>
+  <input type="email" name="email" placeholder="Email" [(ngModel)]="selectedUser.email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+  <div *ngIf="userForm.controls['email']?.errors?.['pattern'] && userForm.controls['email']?.dirty">
+    Please enter a valid email address.
+  </div>
+  <input type="password" name="password" placeholder="Password" [(ngModel)]="selectedUser.password" required>
+  <input type="password" name="confirm_password" placeholder="Confirm Password" [(ngModel)]="selectedUser.confirm_password" required>
+  <div *ngIf="selectedUser.password !== selectedUser.confirm_password">
+    Passwords do not match!
+  </div>
+  <button type="submit" [disabled]="userForm.invalid || selectedUser.password !== selectedUser.confirm_password">{{ isEditMode ? 'Update' : 'Create' }}</button>
+  <button type="button" (click)="clearSelectedUser()">Cancel</button>
+</form>
+
+<h2>---------------------------------------------------------------</h2>
+<form (submit)="createUser(newUser)" #userForm="ngForm">
+  <div>
+    <label for="first_name">Enter First Name</label>
+    <input type="text" id="first_name" name="first_name" [(ngModel)]="newUser.first_name" required>
+  </div>
+  <div>
+    <label for="last_name">Enter Last Name</label>
+    <input type="text" id="last_name" name="last_name" [(ngModel)]="newUser.last_name" required>
+  </div>
+  <div>
+    <label for="email">Email</label>
+    <input type="email" name="email" placeholder="Email" [(ngModel)]="newUser.email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+  <div *ngIf="userForm.controls['email']?.errors?.['pattern'] && userForm.controls['email']?.dirty">
+    Please enter a valid email address.
+  </div>
+  </div>
+  <div>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" [(ngModel)]="newUser.password" required>
+  </div>
+  <div>
+    <label for="confirm_password">Confirm your Password</label>
+    <input type="password" id="confirm_password" name="confirm_password" [(ngModel)]="newUser.confirm_password" required>
+  </div>
+  <div *ngIf="newUser.password !== newUser.confirm_password">
+    Passwords do not match!
+  </div>
+  <button type="submit" [disabled]="newUser.password !== newUser.confirm_password">Create</button>
+</form>
